@@ -1,0 +1,3 @@
+Questions to ask the Analyst
+What is the message structure.
+Ask the analyst to clarify if the business rules reside within the database. (Assumption taken is that they reside in the database.)
