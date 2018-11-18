@@ -17,14 +17,18 @@ public class Broker {
 
     @JmsListener(destination = "incoming.validated.payment.messages")
     @SendTo("incoming.retrieve.payment.message.status")
-    public PaymentMessageStatus getMessage(final ValidatedPayment validatedPayment) {
-        return paymentService.receiveValidatedPaymentMessage(validatedPayment);
+    public String getMessage(final String validatedPayment) {
+        System.out.print(validatedPayment);
+
+        return validatedPayment;
+//        paymentService.receiveValidatedPaymentMessage(validatedPayment);
     }
 
-
     @JmsListener(destination = "incoming.retrieve.payment.message.status")
-    public String retrievePaymentStatusMessage(final PaymentMessageStatus paymentMessageStatus) {
-        paymentService.retrievePaymentMessageStatus(paymentMessageStatus);
-        return "";
+    public void retrievePaymentStatusMessage(final String paymentMessageStatus) {
+        System.out.print("*****");
+        System.out.print(paymentMessageStatus);
+//        paymentService.retrievePaymentMessageStatus(paymentMessageStatus);
+//        return "";
     }
 }
