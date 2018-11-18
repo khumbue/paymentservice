@@ -1,8 +1,12 @@
 package com.paymentservice.paymentservice.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PaymentMessageStatus {
+@XmlRootElement
+public class PaymentMessageStatus implements Serializable {
+    private static final long serialVersionUID = 7430193752062513134L;
     private String fromAccountName;
     private String fromAccountNumber;
     private BigDecimal amount;

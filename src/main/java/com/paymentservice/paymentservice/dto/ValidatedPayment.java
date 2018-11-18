@@ -1,25 +1,16 @@
 package com.paymentservice.paymentservice.dto;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @XmlRootElement(name = "validatedPayment")
-public class ValidatedPayment {
+public class ValidatedPayment implements Serializable {
 
-    @XmlElement
     private String fromAccountName;
-
-    @XmlElement
     private String fromAccountNumber;
-
-    @XmlElement
     private BigDecimal amount;
-
-    @XmlElement
     private String toAccountName;
-
-    @XmlElement
     private String toAccountNumber;
 
     public String getFromAccountName() {

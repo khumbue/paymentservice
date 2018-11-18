@@ -2,19 +2,30 @@ package com.paymentservice.paymentservice.service;
 
 import com.paymentservice.paymentservice.dto.PaymentMessageStatus;
 import com.paymentservice.paymentservice.dto.ValidatedPayment;
+import com.paymentservice.paymentservice.util.GenericMarshaller;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentService {
-    public PaymentMessageStatus receiveValidatedPaymentMessage(ValidatedPayment validatedPayment) {
+
+    public String receiveValidatedPaymentMessage(ValidatedPayment validatedPayment) {
+        GenericMarshaller<PaymentMessageStatus> genericMarshaller = new GenericMarshaller<>();
         PaymentMessageStatus paymentMessageStatus = new PaymentMessageStatus();
-        System.out.println("Completed processing validated payment message for payer: " + validatedPayment.getFromAccountName());
         paymentMessageStatus.setAmount(validatedPayment.getAmount());
+        paymentMessageStatus.setStatus(generateRandomStatus());
         paymentMessageStatus.setFromAccountName(validatedPayment.getFromAccountName());
-        return paymentMessageStatus;
+        String paymentMessageStatusXml = genericMarshaller.marshall(paymentMessageStatus, PaymentMessageStatus.class);
+        System.out.println("Completed processing validated payment message for payer: " + validatedPayment.getFromAccountName());
+        return paymentMessageStatusXml;
     }
 
     public void retrievePaymentMessageStatus(PaymentMessageStatus paymentMessageStatus) {
         System.out.println("Completed processing validated payment message for payer: " + paymentMessageStatus.getFromAccountName());
+    }
+
+    //Assumption is the payment status might not be received in the initial SWIFT MT101 message hence we're generating a random status
+    public String generateRandomStatus() {
+        boolean bool = Math.random() < 0.5;
+        return bool ? "Rejected" : "Not Rejected";
     }
 }
