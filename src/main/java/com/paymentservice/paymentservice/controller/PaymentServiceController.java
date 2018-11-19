@@ -4,6 +4,7 @@ import com.paymentservice.paymentservice.service.RoutingRulesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +17,7 @@ public class PaymentServiceController {
 
     @ApiOperation(tags = "payment-service", value = "This service gets routing rules from the database.")
     @GetMapping("/getRoutingRules")
-    public String getRoutingRules(@PathVariable String ruleIdentifier) {
-        return routingRulesService.getRoutingRules(ruleIdentifier);
+    public ResponseEntity<String> getRoutingRules(@RequestParam String ruleIdentifier) {
+        return ResponseEntity.ok(routingRulesService.getRoutingRules(ruleIdentifier));
     }
 }

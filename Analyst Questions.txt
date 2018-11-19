@@ -1,3 +1,4 @@
 Questions to ask the Analyst
-What is the message structure.
+What is the message structure of the Swift M101 message.
 Ask the analyst to clarify if the business rules reside within the database. (Assumption taken is that they reside in the database.)
+http://localhost:8080/payment-service/swagger-ui.html#/
