@@ -5,10 +5,12 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
-public class BusinessRule implements Serializable {
+public class RoutingRule implements Serializable {
 
     @Id
     private Long id;
+
+    private String settlementEngine;
 
     public Long getId() {
         return id;
@@ -16,5 +18,13 @@ public class BusinessRule implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSettlementEngine() {
+        return settlementEngine;
+    }
+
+    public void setSettlementEngine(String settlementEngine) {
+        this.settlementEngine = settlementEngine;
     }
 }

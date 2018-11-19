@@ -1,22 +1,25 @@
 package com.paymentservice.paymentservice.service;
 
+import com.paymentservice.paymentservice.model.RoutingRule;
+import com.paymentservice.paymentservice.repository.RoutingRuleRepository;
 import com.paymentservice.paymentservice.util.RandomBooleanGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class RoutingRulesService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoutingRulesService.class);
+
     @Autowired
-    JmsTemplate jmsTemplate;
+    RoutingRuleRepository routingRuleRepository;
 
     public String getRoutingRules(String ruleIdentifier) {
-        System.out.println("Getting rules for rule identifier: " + ruleIdentifier);
-        return generateRandomRule();
-    }
-
-    private String generateRandomRule() {
-        return RandomBooleanGenerator.generateRandomStatus() ? "None" : "Watchamakalit";
+        LOGGER.info("Getting rule for identifier: " + ruleIdentifier);
+        RoutingRule routingRule = routingRuleRepository.findById(Long.parseLong(ruleIdentifier)).get();
+        return routingRule.getSettlementEngine();
     }
 }

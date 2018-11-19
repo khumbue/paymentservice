@@ -7,15 +7,11 @@ import java.io.StringWriter;
 
 public class GenericMarshaller<T> {
 
-    public String marshall(T t, Class clazz) {
+    public String marshall(T t, Class clazz) throws JAXBException {
         StringWriter stringWriter = new StringWriter();
-        try {
-            JAXBContext jContext = JAXBContext.newInstance(clazz);
-            Marshaller marshallerObj = jContext.createMarshaller();
-            marshallerObj.marshal(t, stringWriter);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        JAXBContext jContext = JAXBContext.newInstance(clazz);
+        Marshaller marshallerObj = jContext.createMarshaller();
+        marshallerObj.marshal(t, stringWriter);
         return stringWriter.toString();
     }
 }
