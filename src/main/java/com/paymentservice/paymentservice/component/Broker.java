@@ -2,7 +2,9 @@ package com.paymentservice.paymentservice.component;
 
 import com.paymentservice.paymentservice.dto.PaymentMessageStatus;
 import com.paymentservice.paymentservice.dto.ValidatedPayment;
+import com.paymentservice.paymentservice.service.AcknowledgementSenderService;
 import com.paymentservice.paymentservice.service.PaymentService;
+import com.paymentservice.paymentservice.util.GenericMarshaller;
 import com.paymentservice.paymentservice.util.GenericUnmarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
@@ -12,9 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBException;
 
-import static com.paymentservice.paymentservice.util.ApplicationConstants.INCOMING_RETRIEVE_PAYMENT_MESSAGE_STATUS;
-import static com.paymentservice.paymentservice.util.ApplicationConstants.INCOMING_VALIDATED_PAYMENT_MESSAGES;
-import static com.paymentservice.paymentservice.util.ApplicationConstants.PAYMENT_SERVICE_INVALID_MESSAGES;
+import static com.paymentservice.paymentservice.util.ApplicationConstants.*;
 
 @Component
 public class Broker {
@@ -23,11 +23,14 @@ public class Broker {
     PaymentService paymentService;
 
     @Autowired
+    AcknowledgementSenderService acknowledgementSenderService;
+
+    @Autowired
     JmsTemplate jmsTemplate;
 
     @JmsListener(destination = INCOMING_VALIDATED_PAYMENT_MESSAGES)
     public void getMessage(final String validatedPaymentXml) {
-        System.out.print(validatedPaymentXml);
+        System.out.println(validatedPaymentXml);
         GenericUnmarshaller<ValidatedPayment> genericUnmarshaller = new GenericUnmarshaller<>();
 
         try {
@@ -42,20 +45,36 @@ public class Broker {
 
     @JmsListener(destination = INCOMING_RETRIEVE_PAYMENT_MESSAGE_STATUS)
     public void retrievePaymentStatusMessage(final String paymentMessageStatusXml) {
-        System.out.print("*****");
+        System.out.println("Retrieve Payment Message Status");
         GenericUnmarshaller<PaymentMessageStatus> genericUnmarshaller = new GenericUnmarshaller<>();
+        GenericMarshaller<PaymentMessageStatus> genericMarshaller = new GenericMarshaller<>();
+
         try {
             PaymentMessageStatus paymentMessageStatus = (PaymentMessageStatus) genericUnmarshaller.unmarshall(paymentMessageStatusXml, PaymentMessageStatus.class);
             if ("Rejected".equalsIgnoreCase(paymentMessageStatus.getStatus())) {
-                System.out.print("Status is Rejected");
+                System.out.println("Status is Rejected");
             } else {
-                System.out.print("Status is Not Rejected");
+                System.out.println("Status is Not Rejected");
+                paymentService.determineDestination(paymentMessageStatus);
             }
+
+            jmsTemplate.convertAndSend(OUTGOING_MT195_ACKNOWLEDGEMENT, paymentMessageStatusXml);
         } catch (JAXBException e) {
             //TODO: Send error cause to someone who monitors or handles the error queue.
             jmsTemplate.convertAndSend(PAYMENT_SERVICE_INVALID_MESSAGES, paymentMessageStatusXml);
         }
+    }
 
+    @JmsListener(destination = OUTGOING_MT195_ACKNOWLEDGEMENT)
+    public void sendMT195Acknowledgement(final String paymentMessageStatusXml) {
+        GenericUnmarshaller<PaymentMessageStatus> genericUnmarshaller = new GenericUnmarshaller<>();
+        try {
+            PaymentMessageStatus paymentMessageStatus = (PaymentMessageStatus) genericUnmarshaller.unmarshall(paymentMessageStatusXml, PaymentMessageStatus.class);
+            acknowledgementSenderService.sendMT195Acknowledgement(paymentMessageStatus);
+        } catch (JAXBException e) {
+            //TODO: Send error cause to someone who monitors or handles the error queue.
+            jmsTemplate.convertAndSend(PAYMENT_SERVICE_INVALID_MESSAGES, paymentMessageStatusXml);
+        }
     }
 
     @SendTo(PAYMENT_SERVICE_INVALID_MESSAGES)
