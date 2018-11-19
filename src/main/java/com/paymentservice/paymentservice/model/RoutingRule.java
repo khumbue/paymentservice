@@ -1,5 +1,6 @@
 package com.paymentservice.paymentservice.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ public class RoutingRule implements Serializable {
     @Id
     private Long id;
 
+    @Column(name="settlement_engine")
     private String settlementEngine;
 
     public Long getId() {
