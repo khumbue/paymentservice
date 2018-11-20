@@ -1,18 +1,42 @@
 package com.paymentservice.paymentservice.util;
 
+import com.paymentservice.paymentservice.exception.PaymentServiceException;
 import com.prowidesoftware.swift.model.SwiftMessage;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringRunner.class)
 public class SwiftMessageConverterTest {
+
+    @TestConfiguration
+    static class EmployeeServiceImplTestContextConfiguration {
+
+        @Bean
+        public SwiftMessageConverter swiftMessageConverter() {
+            return new SwiftMessageConverter();
+        }
+
+        @Bean
+        public SwiftMessageCustomValidator swiftMessageCustomValidator() {
+            return new SwiftMessageCustomValidator();
+        }
+    }
+
+    @Autowired
+    SwiftMessageConverter swiftMessageConverter;
 
     @Test
     public void getXmlMessage() {
-        SwiftMessageConverter swiftMessageConverter = new SwiftMessageConverter();
         String xmlMessage = swiftMessageConverter.getXmlMessage(generateSampleSwiftMessage());
         assertTrue(xmlMessage.contains("<name>20</name>"));
         assertTrue(xmlMessage.contains("123456789"));
@@ -23,7 +47,6 @@ public class SwiftMessageConverterTest {
 
     @Test
     public void getSwiftMessageObject() throws Exception {
-        SwiftMessageConverter swiftMessageConverter = new SwiftMessageConverter();
         SwiftMessage swiftMessage = swiftMessageConverter.getSwiftMessageObject(generateSampleSwiftMessage());
         String beneficiaryStr = swiftMessage.getBlock4().getTagValue("59");
 
@@ -36,6 +59,11 @@ public class SwiftMessageConverterTest {
         assertEquals(swiftMessage.getBlock4().getTagValue("30"), "160211");
         assertEquals(StringUtils.substring(swiftMessage.getBlock4().getTagValue("32B"), 0, 3), "EUR");
         assertEquals(new BigDecimal(StringUtils.substring(swiftMessage.getBlock4().getTagValue("32B"), 3).replace(',', '.')), new BigDecimal("123.45"));
+    }
+
+    @Test(expected = PaymentServiceException.class)
+    public void whenMessageInvalid_PaymentServiceExceptionThrown() throws Exception {
+        SwiftMessage swiftMessage = swiftMessageConverter.getSwiftMessageObject(generateSampleSwiftMessage2());
     }
 
     private String generateSampleSwiftMessage() {

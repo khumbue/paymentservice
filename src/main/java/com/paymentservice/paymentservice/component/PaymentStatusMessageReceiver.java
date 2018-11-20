@@ -37,7 +37,6 @@ public class PaymentStatusMessageReceiver {
 
         try {
             Payment payment = genericUnmarshaller.unmarshall(paymentXmlMessage, Payment.class);
-            payment.setStatus("Not Rejected");
             if ("Rejected".equalsIgnoreCase(payment.getStatus())) {
                 LOGGER.info("Status is Rejected");
             } else {

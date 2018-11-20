@@ -20,7 +20,7 @@ public class Payment implements Serializable {
     String senderReference;
 
     /**
-     * Tag 50F or 50G or 50H – Ordering Customer
+     * Tag 50H – Ordering Customer
      */
     String orderingCustomer;
 

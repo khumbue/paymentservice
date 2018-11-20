@@ -42,19 +42,10 @@ public class RoutingRulesServiceImplIntegrationTest {
     @Before
     public void setUp() {
         RoutingRule routingRule = generateRoutingRule();
+        Optional<RoutingRule> routingRuleOptional = Optional.of(routingRule);
 
-        Mockito.when(routingRuleRepository.findById(1003L).get())
-                .thenReturn(routingRule);
-
-        /*Object object = new Object();
-        Long routingRuleId = 1003L;
-        Optional<Object> objectList = Optional.of(Arrays.asList(new Object()));
-        Mockito.when(routingRuleRepository.findById(routingRuleId))
-                .thenReturn(objectList);
-
-        String routingRuleStr = routingRulesService.getRoutingRules("1003");
-        Mockito.verify(routingRuleRepository).findById(routingRuleId);
-        assertNotNull(returnedobject);*/
+        Mockito.when(routingRuleRepository.findById(1003L))
+                .thenReturn(routingRuleOptional);
     }
 
     @Test

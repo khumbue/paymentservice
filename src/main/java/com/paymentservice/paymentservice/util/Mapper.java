@@ -38,6 +38,4 @@ public class Mapper {
     private static String generateRandomStatus() {
         return RandomBooleanGenerator.generateRandomStatus() ? "Rejected" : "Not Rejected";
     }
-
-
 }
