@@ -8,14 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/payment-service")
-@Api(tags = "payment-service", description = "Payment Service Controller")
-public class PaymentServiceController {
+@RequestMapping("/routing-rules-service")
+@Api(tags = "routing-rules-service", description = "Routing Rules Service Controller")
+public class RoutingRulesController {
 
     @Autowired
     RoutingRulesService routingRulesService;
 
-    @ApiOperation(tags = "payment-service", value = "This service gets routing rules from the database.")
+    @ApiOperation(tags = "routing-rules-service", value = "This service gets routing rules from the database.")
     @GetMapping("/getRoutingRules")
     public ResponseEntity<String> getRoutingRules(@RequestParam String ruleIdentifier) {
         return ResponseEntity.ok(routingRulesService.getRoutingRules(ruleIdentifier));

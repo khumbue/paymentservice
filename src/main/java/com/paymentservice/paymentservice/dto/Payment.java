@@ -25,7 +25,8 @@ public class Payment implements Serializable {
     String orderingCustomer;
 
     /**
-     * Tag 50F or 50G or 50H – Ordering Customer
+     * Tag 50H – Ordering Customer
+     * Only handling 50H for simplicity
      */
     String orderingCustomerAccountNumber;
 
@@ -55,12 +56,14 @@ public class Payment implements Serializable {
     BigDecimal transactionAmount;
 
     /**
-     * Tag 50F or 50G or 50H – Ordering Customer
+     * Tag 59 – Ordering Customer
+     * Only handling 59 for simplicity
      */
     String beneficiaryCustomer;
 
     /**
-     * Tag 50F or 50G or 50H – Ordering Customer Account Number
+     * Tag 59 – Ordering Customer Account Number
+     * Only handling 59 for simplicity
      */
     String beneficiaryAccountNumber;
 

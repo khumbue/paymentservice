@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Class is used as a Facade of the internal flow. Provides methods that
+ * Class is used as a simplified Facade of the internal flow. Provides methods that process the messages read from the different queues by the Broker class.
  */
 @Service
 public class PaymentService {

@@ -32,11 +32,12 @@ public class PaymentStatusMessageReceiver {
     JmsTemplate jmsTemplate;
 
     public void retrievePaymentMessageStatus(String paymentXmlMessage) {
-        LOGGER.info("Retrieve Payment Message Status");
+        LOGGER.info("Running Retrieve Payment Message Status");
         GenericUnmarshaller<Payment> genericUnmarshaller = new GenericUnmarshaller<>();
 
         try {
             Payment payment = genericUnmarshaller.unmarshall(paymentXmlMessage, Payment.class);
+            payment.setStatus("Not Rejected");
             if ("Rejected".equalsIgnoreCase(payment.getStatus())) {
                 LOGGER.info("Status is Rejected");
             } else {
@@ -53,8 +54,9 @@ public class PaymentStatusMessageReceiver {
     public void determineDestination(Payment payment) {
         GenericMarshaller<Payment> paymentGenericMarshaller = new GenericMarshaller<>();
 
-        LOGGER.info("Determine Destination");
         String routingRuleIdentifier = generateRandomRuleId();
+        LOGGER.info("Determine Destination using routingRuleIdentifier {}.", routingRuleIdentifier);
+
         String targetEngine = retrieveTargetEngineFromRoutingService(routingRuleIdentifier);
         payment.setTargetEngine(targetEngine);
         try {
@@ -65,9 +67,10 @@ public class PaymentStatusMessageReceiver {
         }
     }
 
+    //Calling the routing rules service to retrieve the rule given a specific identifier.
     private String retrieveTargetEngineFromRoutingService(String routingRuleIdentifier) {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> searchPayload = restTemplate.getForEntity(routingRulesServiceUrl, String.class, routingRuleIdentifier);
+        ResponseEntity<String> searchPayload = restTemplate.getForEntity(routingRulesServiceUrl + routingRuleIdentifier, String.class);
         return searchPayload.getBody();
     }
 

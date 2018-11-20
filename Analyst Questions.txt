@@ -3,4 +3,5 @@ What is the message structure of the Swift M101 message?
 What is the structure of an MT195 Acknowledgement?
 Do we need to send a message to anyone who handles error files after we send the messages to an error queue?
 Ask the analyst to clarify if the business rules reside within the database. (Assumption taken is that they reside in the database.)
+What are the business rules for handling exceptions?
 http://localhost:8080/payment-service/swagger-ui.html#/

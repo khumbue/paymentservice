@@ -15,6 +15,7 @@ import static com.paymentservice.paymentservice.util.ApplicationConstants.PAYMEN
 
 @Component
 public class PaymentSettlementEngineSender {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MT195AcknowledgementSender.class);
 
     @Autowired
@@ -24,16 +25,17 @@ public class PaymentSettlementEngineSender {
     TargetSettlementEngineAdaptor targetSettlementEngineAdaptor;
 
     public void sendPaymentToSettlementEngine(String paymentXmlMessage) {
+    LOGGER.info("Running Send Payment to Settlement Engine");
 
         GenericUnmarshaller<Payment> genericUnmarshaller = new GenericUnmarshaller<>();
         try {
             Payment payment = genericUnmarshaller.unmarshall(paymentXmlMessage, Payment.class);
 
             if ("None".equalsIgnoreCase(payment.getTargetEngine())) {
-                System.out.println("Rules engine returned None");
+                LOGGER.info("Rules engine returned None");
                 targetSettlementEngineAdaptor.settlementWithNoAcknowledgement(payment);
             } else if ("Watchamakalit".equalsIgnoreCase(payment.getTargetEngine())) {
-                System.out.println("Rules engine returned Watchamakalit");
+                LOGGER.info("Rules engine returned Watchamakalit");
                 targetSettlementEngineAdaptor.settlementWithAcknowledgment(payment);
             }
         } catch (JAXBException e) {

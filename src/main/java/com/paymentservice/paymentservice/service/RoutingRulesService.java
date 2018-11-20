@@ -2,7 +2,6 @@ package com.paymentservice.paymentservice.service;
 
 import com.paymentservice.paymentservice.model.RoutingRule;
 import com.paymentservice.paymentservice.repository.RoutingRuleRepository;
-import com.paymentservice.paymentservice.util.RandomBooleanGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

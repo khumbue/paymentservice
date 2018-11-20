@@ -1,7 +1,10 @@
 package com.paymentservice.paymentservice.util;
 
 import com.prowidesoftware.swift.model.SwiftMessage;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
+
+import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 
@@ -11,20 +14,28 @@ public class SwiftMessageConverterTest {
     public void getXmlMessage() {
         SwiftMessageConverter swiftMessageConverter = new SwiftMessageConverter();
         String xmlMessage = swiftMessageConverter.getXmlMessage(generateSampleSwiftMessage());
-//        String xmlMessage = swiftMessageConverter.getXmlMessage(generateSampleSwiftMessage1());
-//        String xmlMessage = swiftMessageConverter.getXmlMessage(generateSampleSwiftMessage2());
-        System.out.println(xmlMessage);
+        assertTrue(xmlMessage.contains("<name>20</name>"));
+        assertTrue(xmlMessage.contains("123456789"));
+        assertTrue(xmlMessage.contains("<name>52A</name>"));
+        assertTrue(xmlMessage.contains("<value>BANKGB01XXX</value>"));
+        assertTrue(xmlMessage.contains("<value>11FEB2016INV1</value>"));
     }
 
     @Test
-    public void getSwiftMessageObject() {
+    public void getSwiftMessageObject() throws Exception {
         SwiftMessageConverter swiftMessageConverter = new SwiftMessageConverter();
         SwiftMessage swiftMessage = swiftMessageConverter.getSwiftMessageObject(generateSampleSwiftMessage());
-//        SwiftMessage swiftMessage = swiftMessageConverter.getSwiftMessageObject(generateSampleSwiftMessage1());
-//        SwiftMessage swiftMessage = swiftMessageConverter.getSwiftMessageObject(generateSampleSwiftMessage2());
-        System.out.println(swiftMessage.getSender());
-        System.out.println(swiftMessage.getReceiver());
-        System.out.println(swiftMessage.getBlock4().getTagByName("59"));
+        String beneficiaryStr = swiftMessage.getBlock4().getTagValue("59");
+
+        assertEquals(swiftMessage.getSender(), "LRLRXXXX4A07");
+        assertEquals(swiftMessage.getReceiver(), "SAESVAV0AXXX");
+
+        assertEquals(SwiftMessageUtil.extractAccountName(beneficiaryStr), "JAMES BOND");
+        assertEquals(SwiftMessageUtil.extractAccountNumber(beneficiaryStr), "/GB12SEPA12341234123498");
+
+        assertEquals(swiftMessage.getBlock4().getTagValue("30"), "160211");
+        assertEquals(StringUtils.substring(swiftMessage.getBlock4().getTagValue("32B"), 0, 3), "EUR");
+        assertEquals(new BigDecimal(StringUtils.substring(swiftMessage.getBlock4().getTagValue("32B"), 3).replace(',', '.')), new BigDecimal("123.45"));
     }
 
     private String generateSampleSwiftMessage() {
@@ -53,7 +64,7 @@ public class SwiftMessageConverterTest {
                 "-}{5:{MAC:00000000}{CHK:24857F4599E7}{TNG:}}";
     }
 
-    private String generateSampleSwiftMessage1(){
+    private String generateSampleSwiftMessage1() {
         return "{1:F01SAESVAV0AXXX0466020121}{2:O1011538070522LRLRXXXX4A0700005910650705221739N}{3:{108:MT101 001 OF 019}}{4:\n" +
                 ":20:00028\n" +
                 ":28D:1/1\n" +
@@ -61,7 +72,7 @@ public class SwiftMessageConverterTest {
                 "19Apr2002\n" +
                 ":30:020419\n" +
                 ":21:x\n" +
-                ":32B:USD1,\n" +
+                ":32B:USD1,0\n" +
                 ":50L:x\n" +
                 ":59:/x\n" +
                 "x\n" +
@@ -69,9 +80,9 @@ public class SwiftMessageConverterTest {
                 "-}{5:{MAC:00000000}{CHK:24857F4599E7}{TNG:}}";
     }
 
-    private String generateSampleSwiftMessage2(){
+    private String generateSampleSwiftMessage2() {
         return "{1:F21FOOLHKH0AXXX0304009999}{4:{177:1608140809}{451:0}}{1:F01FOOLHKH0AXXX0304009999}{2:O9401609160814FOOLHKH0AXXX03040027341608141609N}{4:\n" +
-                ":20:USD940NO1\n" +
+//                ":20:USD940NO1\n" +
                 ":21:123456/DEV\n" +
                 ":25:USD234567\n" +
                 ":28C:1/1\n" +

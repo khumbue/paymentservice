@@ -13,7 +13,8 @@ import javax.xml.bind.JAXBException;
 import static com.paymentservice.paymentservice.util.ApplicationConstants.PAYMENT_SERVICE_INVALID_MESSAGES;
 
 @Component
-public class MT195AcknowledgementSender {
+public class
+MT195AcknowledgementSender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MT195AcknowledgementSender.class);
 

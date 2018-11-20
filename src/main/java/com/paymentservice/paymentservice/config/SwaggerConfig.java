@@ -27,8 +27,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Payment Service")
-                .description("Payment Service")
+                .title("Routing Rules Service")
+                .description("Routing Rules Service")
                 .version("0.0.1-SNAPSHOT")
                 .build();
     }
