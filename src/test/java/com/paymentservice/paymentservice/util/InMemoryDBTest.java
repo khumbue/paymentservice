@@ -1,8 +1,8 @@
 package com.paymentservice.paymentservice.util;
 
+import com.paymentservice.paymentservice.PaymentserviceApplication;
 import com.paymentservice.paymentservice.model.RoutingRule;
 import com.paymentservice.paymentservice.repository.RoutingRuleRepository;
-import javafx.application.Application;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = PaymentserviceApplication.class)
 public class InMemoryDBTest {
 
     @Autowired
